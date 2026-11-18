@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nihon Box – Le Japon en poche</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sakura:#ff7aa8; --sakura-l:#ffe3ee; --indigo:#3b4cca; --indigo-l:#e4e8ff;
+  --matcha:#3fae6a; --matcha-l:#ddf5e5; --gold:#ffb627; --gold-l:#fff1cf;
+  --vermillon:#ef4b3c; --verm-l:#ffe1dc; --sky:#2bb3e6; --sky-l:#dcf3fc;
+  --ink:#24213a; --muted:#6b6785; --bg:#fff8f3; --card:#ffffff;
+  --r:22px; --shadow:0 6px 20px rgba(60,40,90,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"M PLUS Rounded 1c",system-ui,sans-serif;background:var(--bg);color:var(--ink);
+  background-image:radial-gradient(circle at 10% 0%,#ffe3ee 0,transparent 40%),radial-gradient(circle at 100% 30%,#e4e8ff 0,transparent 35%),radial-gradient(circle at 0% 100%,#ddf5e5 0,transparent 35%);
+  background-attachment:fixed;min-height:100vh;padding-bottom:90px}
+button{font-family:inherit;cursor:pointer;border:none}
+header{padding:22px 20px 10px;display:flex;align-items:center;gap:14px;max-width:1400px;margin:0 auto}
+.logo{width:54px;height:54px;border-radius:50%;background:var(--vermillon);display:grid;place-items:center;color:#fff;font-size:26px;font-weight:800;box-shadow:0 0 0 6px #fff,0 0 0 9px var(--vermillon)}
+header h1{font-size:clamp(22px,4vw,32px);font-weight:800;letter-spacing:-.5px}
+header h1 span{color:var(--sakura)}
+header p{color:var(--muted);font-size:14px}
+.xp{margin-left:auto;background:var(--gold-l);color:#9a6400;padding:8px 14px;border-radius:999px;font-weight:800;font-size:14px;white-space:nowrap}
+main{max-width:1400px;margin:0 auto;padding:10px 20px 30px}
+nav.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:center;gap:6px;padding:10px 10px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(60,40,90,.12);z-index:50}
+nav.tabs button{flex:1;max-width:170px;background:transparent;border-radius:16px;padding:8px 4px;font-size:13px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;transition:.2s}
+nav.tabs button .ic{font-size:24px}
+nav.tabs button.on{color:#fff}
+nav.tabs button.on[data-t=decouvrir]{background:var(--sakura)}
+nav.tabs button.on[data-t=langue]{background:var(--indigo)}
+nav.tabs button.on[data-t=voyage]{background:var(--matcha)}
+nav.tabs button.on[data-t=quiz]{background:var(--gold);color:#5a3a00}
+section.view{display:none;animation:fade .35s}
+section.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2{font-size:24px;font-weight:800;margin:10px 0 4px}
+.sub{color:var(--muted);margin-bottom:16px;font-size:15px}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.pill{background:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;color:var(--muted);box-shadow:var(--shadow)}
+.pill.on{background:var(--ink);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.card{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .2s}
+.card:hover{transform:translateY(-3px)}
+.card .emo{font-size:38px;line-height:1;margin-bottom:8px}
+.card h3{font-size:18px;font-weight:800}
+.card .jp{font-size:14px;color:var(--muted);margin-bottom:8px}
+.card p{font-size:14.5px;line-height:1.55}
+.card .band{position:absolute;top:0;left:0;right:0;height:6px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;margin:8px 6px 0 0}
+.more{margin-top:10px;font-size:14px;line-height:1.55;display:none;border-top:2px dashed #eee;padding-top:10px}
+.card.open .more{display:block}
+.card.clickable{cursor:pointer}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;font-weight:700}
+/* Langue */
+.kana-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:620px}
+.kana{background:#fff;border-radius:16px;padding:10px 4px;text-align:center;box-shadow:var(--shadow);cursor:pointer;transition:.15s}
+.kana:active{transform:scale(.94)}
+.kana b{display:block;font-size:30px;color:var(--indigo)}
+.kana small{color:var(--muted);font-weight:700}
+.kana.empty{visibility:hidden}
+.kana.learned{background:var(--matcha-l)}
+.two{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:900px){.two{grid-template-columns:1fr 1fr;align-items:start}}
+.flash{background:linear-gradient(135deg,var(--indigo),#7b5cff);color:#fff;border-radius:28px;padding:26px;text-align:center;box-shadow:var(--shadow)}
+.flash .big{font-size:96px;font-weight:800;line-height:1.1;margin:10px 0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.opt{background:rgba(255,255,255,.18);color:#fff;font-size:20px;font-weight:800;padding:14px;border-radius:16px;transition:.15s}
+.opt:hover{background:rgba(255,255,255,.3)}
+.opt.ok{background:var(--matcha)!important}
+.opt.ko{background:var(--vermillon)!important}
+.streak{display:flex;justify-content:center;gap:16px;font-weight:700;font-size:14px;opacity:.95}
+.phrase{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:10px}
+.phrase .t{flex:1}
+.phrase .t b{font-size:17px}
+.phrase .t div{font-size:13px;color:var(--muted)}
+.say{background:var(--sky-l);color:var(--sky);width:44px;height:44px;border-radius:50%;font-size:20px;flex-shrink:0}
+.btn{background:var(--ink);color:#fff;font-weight:800;padding:12px 20px;border-radius:14px;font-size:15px}
+.btn.alt{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+/* Voyage */
+.itin{display:flex;flex-direction:column;gap:10px}
+.day{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:var(--shadow)}
+.day .n{background:var(--matcha);color:#fff;font-weight:800;border-radius:12px;padding:6px 10px;font-size:13px;white-space:nowrap}
+.day p{font-size:14.5px;line-height:1.5}
+.check{display:flex;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:12px 14px;box-shadow:var(--shadow);margin-bottom:8px;cursor:pointer}
+.check .box{width:26px;height:26px;border-radius:8px;border:3px solid var(--matcha);display:grid;place-items:center;color:#fff;font-weight:800;flex-shrink:0}
+.check.done .box{background:var(--matcha)}
+.check.done span{text-decoration:line-through;color:var(--muted)}
+.progress{height:12px;background:#eee;border-radius:999px;overflow:hidden;margin:6px 0 14px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--matcha),var(--gold));width:0;transition:.4s}
+.budget{background:#fff;border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+.budget label{font-weight:700;font-size:14px;display:block;margin:10px 0 6px}
+.budget input[type=range]{width:100%;accent-color:var(--matcha)}
+.total{font-size:30px;font-weight:800;color:var(--matcha);margin-top:12px}
+.conv{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.conv input{font-family:inherit;font-size:18px;padding:10px 12px;border-radius:12px;border:2px solid #e5e2ef;width:140px}
+/* Quiz */
+.quizbox{max-width:720px;margin:0 auto;background:#fff;border-radius:28px;padding:24px;box-shadow:var(--shadow)}
+.qtop{display:flex;justify-content:space-between;font-weight:700;color:var(--muted);font-size:14px}
+.qq{font-size:22px;font-weight:800;margin:16px 0;line-height:1.35}
+.qopts{display:grid;gap:10px}
+.qopt{background:var(--gold-l);color:var(--ink);text-align:left;font-size:16px;font-weight:700;padding:14px 16px;border-radius:16px;transition:.15s}
+.qopt:hover{background:#ffe7a8}
+.qopt.ok{background:var(--matcha);color:#fff}
+.qopt.ko{background:var(--vermillon);color:#fff}
+.expl{margin-top:14px;padding:12px 14px;background:var(--sky-l);border-radius:14px;font-size:14.5px;line-height:1.5;display:none}
+.badges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.badge{background:var(--bg);border-radius:18px;padding:12px;text-align:center;width:110px;font-size:12px;font-weight:700;color:var(--muted);filter:grayscale(1);opacity:.5}
+.badge.got{filter:none;opacity:1;background:var(--gold-l);color:#7a4f00}
+.badge div{font-size:32px}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-weight:700;opacity:0;transition:.3s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.petal{position:fixed;top:-20px;font-size:18px;pointer-events:none;z-index:1;animation:fall linear forwards;opacity:.8}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.hero{background:linear-gradient(120deg,var(--sakura),#ff9f6b);color:#fff;border-radius:28px;padding:22px;margin-bottom:20px;display:flex;gap:18px;align-items:center;box-shadow:var(--shadow)}
+.hero .e{font-size:56px}
+.hero b{font-size:20px}
+.hero p{font-size:14.5px;opacity:.95;margin-top:4px;line-height:1.5}
+@media(min-width:700px){nav.tabs button{flex-direction:row;justify-content:center;gap:8px;font-size:15px;padding:12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">日</div>
+  <div><h1>Nihon <span>Box</span></h1><p>Le Japon en poche : culture, langue et voyage</p></div>
+  <div class="xp" id="xp">⭐ 0 XP</div>
+</header>
+
+<main>
+<!-- DÉCOUVRIR -->
+<section class="view" id="v-decouvrir">
+  <div class="hero" id="fact"><div class="e">🎏</div><div><b>Le saviez-vous ?</b><p id="factTxt"></p></div></div>
+  <h2>Découvrir le Japon</h2>
+  <p class="sub">Touche une carte pour en savoir plus.</p>
+  <div class="pills" id="cats"></div>
+  <div class="grid" id="cards"></div>
+</section>
+
+<!-- LANGUE -->
+<section class="view" id="v-langue">
+  <h2>Apprendre les bases</h2>
+  <p class="sub">Touche un caractère pour l'entendre. Entraîne-toi avec les cartes éclair.</p>
+  <div class="pills" id="kanaSw">
+    <button class="pill on" data-k="hira">ひらがな Hiragana</button>
+    <button class="pill" data-k="kata">カタカナ Katakana</button>
+  </div>
+  <div class="two">
+    <div><div class="kana-grid" id="kanaGrid"></div></div>
+    <div>
+      <div class="flash">
+        <div class="streak"><span id="fScore">✅ 0</span><span id="fStreak">🔥 Série : 0</span></div>
+        <div class="big" id="fKana">あ</div>
+        <div>Comment se lit ce caractère ?</div>
+        <div class="opts" id="fOpts"></div>
+      </div>
+      <h2 style="margin-top:24px">Phrases utiles</h2>
+      <div id="phrases"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VOYAGE -->
+<section class="view" id="v-voyage">
+  <h2>Préparer un voyage</h2>
+  <p class="sub">Itinéraires types, budget et liste de préparation.</p>
+  <div class="pills" id="itinSw"></div>
+  <div class="two">
+    <div>
+      <div class="itin" id="itin"></div>
+    </div>
+    <div>
+      <div class="budget">
+        <h3>💴 Estimation du budget</h3>
+        <label>Durée : <span id="bDays">10</span> jours</label>
+        <input type="range" id="rDays" min="5" max="21" value="10">
+        <label>Style : <span id="bStyle">Confort</span></label>
+        <input type="range" id="rStyle" min="0" max="2" value="1">
+        <label>Voyageurs : <span id="bPax">1</span></label>
+        <input type="range" id="rPax" min="1" max="6" value="1">
+        <div class="total" id="bTotal"></div>
+        <div class="hint">Sur place, hors vols. Estimation indicative, prix variables selon la saison.</div>
+        <div class="conv">
+          <input type="number" id="eur" value="10" min="0"> <b>€ ≈</b> <b id="yen" style="font-size:20px;color:var(--indigo)"></b>
+        </div>
+        <div class="hint">Taux approximatif à ajuster : 1 € ≈ <input type="number" id="rate" value="165" style="width:70px;font-family:inherit;font-size:13px;border:1px solid #ddd;border-radius:8px;padding:2px 6px"> ¥</div>
+      </div>
+      <h2 style="margin-top:22px">✅ Ma liste avant de partir</h2>
+      <div class="progress"><i id="prog"></i></div>
+      <div id="checklist"></div>
+    </div>
+  </div>
+  <h2 style="margin-top:26px">🙇 Savoir-vivre</h2>
+  <div class="grid" id="etiq" style="margin-top:12px"></div>
+</section>
+
+<!-- QUIZ -->
+<section class="view" id="v-quiz">
+  <h2 style="text-align:center">Quiz Japon</h2>
+  <p class="sub" style="text-align:center">10 questions au hasard. Gagne des XP et débloque des badges !</p>
+  <div class="quizbox" id="quizbox"></div>
+  <div class="badges" id="badges"></div>
+</section>
+</main>
+
+<nav class="tabs">
+  <button data-t="decouvrir"><span class="ic">🌸</span>Découvrir</button>
+  <button data-t="langue"><span class="ic">あ</span>Langue</button>
+  <button data-t="voyage"><span class="ic">🗾</span>Voyage</button>
+  <button data-t="quiz"><span class="ic">🏆</span>Quiz</button>
+</nav>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const store={get(k,d){try{const v=localStorage.getItem('nb_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('nb_'+k,JSON.stringify(v))}catch(e){}}};
+let XP=store.get('xp',0);
+function addXP(n){XP+=n;store.set('xp',XP);$('#xp').textContent='⭐ '+XP+' XP';checkBadges()}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800)}
+function petals(n=12){for(let i=0;i<n;i++){const p=document.createElement('div');p.className='petal';p.textContent=['🌸','💮','✨'][i%3];p.style.left=Math.random()*100+'vw';p.style.animationDuration=(3+Math.random()*3)+'s';document.body.appendChild(p);setTimeout(()=>p.remove(),6500)}}
+function say(t){try{const u=new SpeechSynthesisUtterance(t);u.lang='ja-JP';u.rate=.85;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){toast('Audio indisponible sur cet appareil')}}
+
+/* ---------- Onglets ---------- */
+const tabs=['decouvrir','langue','voyage','quiz'];
+function show(t){if(!tabs.includes(t))t='decouvrir';document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+t));document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));window.scrollTo(0,0)}
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{location.hash=b.dataset.t});
+window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
+
+/* ---------- Découvrir ---------- */
+const facts=["Le Japon compte plus de 6 800 îles, mais quatre principales : Honshū, Hokkaidō, Kyūshū et Shikoku.","Il y a plus de distributeurs automatiques au Japon que dans presque n'importe quel autre pays : environ un pour 30 habitants.","Le Shinkansen circule depuis 1964 et ses retards moyens se comptent en secondes.","Au Japon, on ne laisse pas de pourboire : cela peut même gêner le serveur.","Le mont Fuji culmine à 3 776 m et l'ascension n'est ouverte qu'en été.","Les Japonais disent « itadakimasu » avant de manger, pour remercier de la nourriture.","Le Japon compte environ 80 000 sanctuaires shintō et 75 000 temples bouddhistes."];
+$('#factTxt').textContent=facts[Math.floor(Math.random()*facts.length)];
+$('#fact').onclick=()=>{$('#factTxt').textContent=facts[Math.floor(Math.random()*facts.length)]};
+const C={sakura:['var(--sakura)','var(--sakura-l)'],indigo:['var(--indigo)','var(--indigo-l)'],matcha:['var(--matcha)','var(--matcha-l)'],gold:['var(--gold)','var(--gold-l)'],verm:['var(--vermillon)','var(--verm-l)'],sky:['var(--sky)','var(--sky-l)']};
+const items=[
+ {c:'Régions',e:'❄️',t:'Hokkaidō',j:'北海道',col:'sky',p:"L'île du nord : nature sauvage, neige poudreuse et fruits de mer.",m:"À voir : Sapporo et son festival de la neige en février, les champs de lavande de Furano en juillet, le parc de Shiretoko. À goûter : ramen au miso, crabe, glaces au lait.",tags:['Ski','Nature']},
+ {c:'Régions',e:'🗼',t:'Tokyo & Kantō',j:'東京・関東',col:'indigo',p:"La mégapole : quartiers futuristes, petites ruelles et temples au cœur de la ville.",m:"À voir : Shibuya et son carrefour, le temple Sensō-ji à Asakusa, Shinjuku la nuit, Akihabara pour les mangas. Excursions faciles : Nikkō, Kamakura et son grand Bouddha, Hakone avec vue sur le Fuji.",tags:['Ville','Shopping']},
+ {c:'Régions',e:'🗻',t:'Chūbu & le Fuji',j:'中部',col:'matcha',p:"Les Alpes japonaises, les villages traditionnels et le mont Fuji.",m:"À voir : les maisons au toit de chaume de Shirakawa-gō, Takayama, le château de Matsumoto, Kanazawa et son jardin Kenroku-en, les cinq lacs du Fuji.",tags:['Montagne','Villages']},
+ {c:'Régions',e:'⛩️',t:'Kyoto, Osaka & Kansai',j:'関西',col:'verm',p:"Le cœur historique : temples, geishas et cuisine de rue.",m:"À voir : les milliers de torii de Fushimi Inari, le pavillon d'or, la forêt de bambous d'Arashiyama, Gion le soir. Osaka : Dōtonbori et les takoyaki. Nara : ses daims en liberté.",tags:['Histoire','Gastronomie']},
+ {c:'Régions',e:'🕊️',t:'Hiroshima & Chūgoku',j:'中国',col:'gold',p:"Une région de mémoire et de paysages marins.",m:"À voir : le mémorial de la Paix d'Hiroshima, le torii flottant de Miyajima, le jardin de Kōraku-en à Okayama. À goûter : l'okonomiyaki façon Hiroshima, en couches.",tags:['Mémoire','Îles']},
+ {c:'Régions',e:'🍊',t:'Shikoku',j:'四国',col:'sakura',p:"La plus petite des grandes îles, idéale pour sortir des sentiers battus.",m:"Célèbre pour le pèlerinage des 88 temples, les gorges d'Iya et leurs ponts de lianes, les nouilles udon de Kagawa et les îles d'art de Naoshima.",tags:['Calme','Pèlerinage']},
+ {c:'Régions',e:'🌋',t:'Kyūshū',j:'九州',col:'verm',p:"Volcans actifs, sources chaudes et histoire des échanges avec l'Europe.",m:"À voir : le volcan Sakurajima, les onsen de Beppu, Nagasaki, le mont Aso. À goûter : les ramen tonkotsu de Fukuoka.",tags:['Volcans','Onsen']},
+ {c:'Régions',e:'🏝️',t:'Okinawa',j:'沖縄',col:'sky',p:"Le Japon tropical : plages turquoise et culture ryūkyū.",m:"Une culture différente du reste du pays, avec sa propre musique (sanshin) et sa cuisine. Plongée, aquarium de Churaumi et château de Shuri.",tags:['Plage','Plongée']},
+ {c:'Cuisine',e:'🍣',t:'Sushi',j:'寿司',col:'verm',p:"Riz vinaigré et poisson cru : bien plus varié qu'en Europe.",m:"Essaie un kaiten-zushi (sushis sur tapis roulant), bon marché et amusant. On trempe le poisson, pas le riz, dans la sauce soja.",tags:['Classique']},
+ {c:'Cuisine',e:'🍜',t:'Ramen',j:'ラーメン',col:'gold',p:"Chaque région a son bouillon : shōyu, miso, shio ou tonkotsu.",m:"Aspirer bruyamment ses nouilles est normal, voire poli ! Beaucoup de restaurants fonctionnent avec un distributeur de tickets à l'entrée.",tags:['Réconfort']},
+ {c:'Cuisine',e:'🍙',t:'Onigiri & konbini',j:'おにぎり',col:'matcha',p:"Les supérettes (konbini) sont une institution, ouvertes 24 h/24.",m:"Onigiri, bentō, desserts, café… le tout de bonne qualité et pas cher. Parfait pour un pique-nique pendant les visites.",tags:['Pas cher']},
+ {c:'Cuisine',e:'🍵',t:'Matcha & wagashi',j:'抹茶',col:'matcha',p:"Thé vert en poudre et petites douceurs traditionnelles.",m:"La cérémonie du thé (sadō) est un art codifié. Les wagashi, souvent à base de pâte de haricot rouge, changent selon les saisons.",tags:['Sucré']},
+ {c:'Cuisine',e:'🐙',t:'Takoyaki & street food',j:'たこ焼き',col:'sakura',p:"Boulettes de poulpe brûlantes, brochettes, crêpes…",m:"Osaka est la capitale de la street food : takoyaki, okonomiyaki, kushikatsu. Attention, l'intérieur des takoyaki est très chaud !",tags:['Osaka']},
+ {c:'Traditions',e:'♨️',t:'Onsen',j:'温泉',col:'sky',p:"Bains de sources chaudes, un vrai rituel de détente.",m:"On se lave entièrement avant d'entrer dans le bain, on y va nu, et on ne met pas sa serviette dans l'eau. Les tatouages peuvent être refusés dans certains établissements.",tags:['Détente']},
+ {c:'Traditions',e:'👘',t:'Kimono & yukata',j:'着物',col:'sakura',p:"Le vêtement traditionnel, porté lors des fêtes et grandes occasions.",m:"Le yukata, plus léger, se porte l'été et dans les ryokan. On croise toujours le pan gauche sur le droit (l'inverse est réservé aux défunts).",tags:['Mode']},
+ {c:'Traditions',e:'⛩️',t:'Sanctuaires & temples',j:'神社・寺',col:'verm',p:"Shintō (sanctuaires, torii rouges) et bouddhisme (temples) cohabitent.",m:"Au sanctuaire : deux saluts, deux claquements de mains, un salut. On peut acheter un omamori (porte-bonheur) ou tirer un omikuji (prédiction).",tags:['Spiritualité']},
+ {c:'Traditions',e:'🎎',t:'Manga & anime',j:'漫画・アニメ',col:'indigo',p:"Une culture populaire mondiale née au Japon.",m:"Akihabara (Tokyo) et Den-Den Town (Osaka) sont les quartiers incontournables. Le musée Ghibli à Mitaka se réserve longtemps à l'avance.",tags:['Pop culture']},
+ {c:'Fêtes',e:'🌸',t:'Hanami',j:'花見',col:'sakura',p:"Fin mars – début avril : pique-niques sous les cerisiers en fleurs.",m:"Le front de floraison remonte du sud vers le nord. Les parcs sont pris d'assaut : on réserve sa place avec une bâche dès le matin.",tags:['Printemps']},
+ {c:'Fêtes',e:'🎆',t:'Matsuri d\'été',j:'夏祭り',col:'gold',p:"Feux d'artifice, danses, chars et stands de nourriture.",m:"Parmi les plus célèbres : Gion Matsuri à Kyoto (juillet), Nebuta à Aomori (août), et les grands feux d'artifice de Tokyo sur la Sumida.",tags:['Été']},
+ {c:'Fêtes',e:'🍁',t:'Momiji',j:'紅葉',col:'verm',p:"En novembre, les érables virent au rouge flamboyant.",m:"Kyoto, Nikkō et Hakone sont magnifiques à cette période. On parle de momijigari, la « chasse aux feuilles rouges ».",tags:['Automne']},
+ {c:'Fêtes',e:'🎍',t:'Nouvel An (Shōgatsu)',j:'正月',col:'matcha',p:"La fête la plus importante de l'année, en famille.",m:"Première visite au sanctuaire (hatsumōde), plats spéciaux (osechi) et cartes de vœux (nengajō). Beaucoup de commerces ferment quelques jours.",tags:['Hiver']},
+];
+const cats=['Tout','Régions','Cuisine','Traditions','Fêtes'];let curCat='Tout';
+function renderCats(){$('#cats').innerHTML=cats.map(c=>`<button class="pill ${c===curCat?'on':''}" data-c="${c}">${c}</button>`).join('');document.querySelectorAll('#cats .pill').forEach(b=>b.onclick=()=>{curCat=b.dataset.c;renderCats();renderCards()})}
+const seen=new Set(store.get('seen',[]));
+function renderCards(){$('#cards').innerHTML=items.filter(i=>curCat==='Tout'||i.c===curCat).map((i,k)=>{const [a,l]=C[i.col];return `<div class="card clickable" data-t="${i.t}"><div class="band" style="background:${a}"></div><div class="emo">${i.e}</div><h3>${i.t}</h3><div class="jp">${i.j}</div><p>${i.p}</p>${i.tags.map(t=>`<span class="tag" style="background:${l};color:${a}">${t}</span>`).join('')}<div class="more">${i.m}</div><div class="hint">${seen.has(i.t)?'✓ Déjà lu':'Toucher pour lire +5 XP'}</div></div>`}).join('');
+ document.querySelectorAll('#cards .card').forEach(c=>c.onclick=()=>{c.classList.toggle('open');const t=c.dataset.t;if(!seen.has(t)){seen.add(t);store.set('seen',[...seen]);addXP(5);c.querySelector('.hint').textContent='✓ Déjà lu'}})}
+renderCats();renderCards();
+
+/* ---------- Langue ---------- */
+const ro="a i u e o ka ki ku ke ko sa shi su se so ta chi tsu te to na ni nu ne no ha hi fu he ho ma mi mu me mo ya - yu - yo ra ri ru re ro wa - - - wo n - - - -".split(' ');
+const H="あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもや-ゆ-よらりるれろわ---をん----".split('');
+const K="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤ-ユ-ヨラリルレロワ---ヲン----".split('');
+let kMode='hira';const learned=store.get('learned',{});
+function renderKana(){const S=kMode==='hira'?H:K;$('#kanaGrid').innerHTML=S.map((k,i)=>k==='-'?'<div class="kana empty"></div>':`<div class="kana ${learned[k]>=3?'learned':''}" data-k="${k}"><b>${k}</b><small>${ro[i]}</small></div>`).join('');document.querySelectorAll('#kanaGrid .kana[data-k]').forEach(d=>d.onclick=()=>say(d.dataset.k))}
+document.querySelectorAll('#kanaSw .pill').forEach(b=>b.onclick=()=>{kMode=b.dataset.k;document.querySelectorAll('#kanaSw .pill').forEach(x=>x.classList.toggle('on',x===b));renderKana();nextFlash()});
+let fScore=0,fStreak=0,best=store.get('best',0);
+const pool=()=>{const S=kMode==='hira'?H:K;return S.map((k,i)=>[k,ro[i]]).filter(x=>x[0]!=='-')};
+function nextFlash(){const P=pool();const ans=P[Math.floor(Math.random()*P.length)];const o=[ans];while(o.length<4){const r=P[Math.floor(Math.random()*P.length)];if(!o.includes(r))o.push(r)}o.sort(()=>Math.random()-.5);
+ $('#fKana').textContent=ans[0];$('#fOpts').innerHTML=o.map(x=>`<button class="opt" data-r="${x[1]}">${x[1]}</button>`).join('');
+ document.querySelectorAll('#fOpts .opt').forEach(b=>b.onclick=()=>{if(b.parentNode.dataset.done)return;b.parentNode.dataset.done=1;
+  if(b.dataset.r===ans[1]){b.classList.add('ok');fScore++;fStreak++;learned[ans[0]]=(learned[ans[0]]||0)+1;store.set('learned',learned);addXP(2);say(ans[0]);if(fStreak>best){best=fStreak;store.set('best',best)}if(fStreak%10===0){petals();toast('🔥 Série de '+fStreak+' !')}}
+  else{b.classList.add('ko');fStreak=0;document.querySelector(`#fOpts .opt[data-r="${ans[1]}"]`).classList.add('ok')}
+  $('#fScore').textContent='✅ '+fScore;$('#fStreak').textContent='🔥 Série : '+fStreak+' (record '+best+')';renderKana();setTimeout(nextFlash,900)})}
+const phrases=[['こんにちは','Konnichiwa','Bonjour'],['ありがとうございます','Arigatō gozaimasu','Merci beaucoup'],['すみません','Sumimasen','Excusez-moi / Pardon'],['はい / いいえ','Hai / Iie','Oui / Non'],['いくらですか？','Ikura desu ka ?','Combien ça coûte ?'],['トイレはどこですか？','Toire wa doko desu ka ?','Où sont les toilettes ?'],['英語のメニューはありますか？','Eigo no menyū wa arimasu ka ?','Avez-vous un menu en anglais ?'],['これをください','Kore o kudasai','Je voudrais ceci, s\'il vous plaît'],['おいしい！','Oishii !','C\'est délicieux !'],['駅はどこですか？','Eki wa doko desu ka ?','Où est la gare ?'],['いただきます','Itadakimasu','Avant de manger (bon appétit)'],['ごちそうさまでした','Gochisōsama deshita','Après le repas (merci pour le repas)']];
+$('#phrases').innerHTML=phrases.map(p=>`<div class="phrase"><div class="t"><b>${p[0]}</b><div>${p[1]} · ${p[2]}</div></div><button class="say" data-s="${p[0]}">🔊</button></div>`).join('');
+document.querySelectorAll('#phrases .say').forEach(b=>b.onclick=()=>say(b.dataset.s.split(' / ')[0]));
+$('#fStreak').textContent='🔥 Série : 0 (record '+best+')';
+renderKana();nextFlash();
+
+/* ---------- Voyage ---------- */
+const itins={
+ '7 jours':[['J1-3','Tokyo','Shibuya, Asakusa, Shinjuku, Harajuku. Excursion à Kamakura ou Nikkō.'],['J4','Hakone','Train vers Hakone : onsen, lac Ashi et vue sur le Fuji.'],['J5-6','Kyoto','Fushimi Inari, Kiyomizu-dera, Arashiyama, Gion le soir.'],['J7','Nara → Osaka','Les daims de Nara, puis soirée street food à Dōtonbori.']],
+ '10 jours':[['J1-3','Tokyo','Quartiers incontournables + une journée à Nikkō.'],['J4','Fuji / Kawaguchiko','Les cinq lacs et la pagode Chūreitō.'],['J5','Takayama','Vieille ville et marchés du matin.'],['J6','Shirakawa-gō → Kanazawa','Village au toit de chaume, jardin Kenroku-en.'],['J7-8','Kyoto','Temples, bambous et cérémonie du thé.'],['J9','Nara','Grand Bouddha du Tōdai-ji et daims.'],['J10','Osaka','Château et street food avant le départ.']],
+ '14 jours':[['J1-4','Tokyo & environs','Tokyo, Kamakura et Nikkō.'],['J5','Hakone','Onsen et ryokan traditionnel.'],['J6-7','Alpes japonaises','Matsumoto, Takayama, Shirakawa-gō.'],['J8','Kanazawa','Quartier des geishas et jardin.'],['J9-11','Kyoto & Nara','Le cœur historique en profondeur.'],['J12','Hiroshima & Miyajima','Mémorial de la Paix et torii flottant.'],['J13-14','Osaka','Street food, Universal Studios ou shopping.']]
+};let curIt='10 jours';
+function renderItin(){$('#itinSw').innerHTML=Object.keys(itins).map(k=>`<button class="pill ${k===curIt?'on':''}" data-i="${k}">🗓️ ${k}</button>`).join('');document.querySelectorAll('#itinSw .pill').forEach(b=>b.onclick=()=>{curIt=b.dataset.i;renderItin()});
+ $('#itin').innerHTML=itins[curIt].map(d=>`<div class="day"><div class="n">${d[0]}</div><p><b>${d[1]}</b><br>${d[2]}</p></div>`).join('')+'<div class="hint">💡 Le Japan Rail Pass peut être rentable si tu fais beaucoup de longs trajets : compare avec les billets à l\'unité.</div>'}
+renderItin();
+const styles=[['Petit budget',80],['Confort',170],['Luxe',400]];
+function budget(){const d=+$('#rDays').value,s=styles[+$('#rStyle').value],p=+$('#rPax').value;$('#bDays').textContent=d;$('#bStyle').textContent=s[0];$('#bPax').textContent=p;$('#bTotal').textContent='≈ '+(d*s[1]*p).toLocaleString('fr-BE')+' €';}
+['#rDays','#rStyle','#rPax'].forEach(i=>$(i).oninput=budget);budget();
+function conv(){$('#yen').textContent=Math.round((+$('#eur').value||0)*(+$('#rate').value||0)).toLocaleString('fr-BE')+' ¥'}
+$('#eur').oninput=conv;$('#rate').oninput=conv;conv();
+const checks=['Passeport valide','Billets d\'avion','Assurance voyage','Réserver les hébergements','Comparer le Japan Rail Pass','Carte IC (Suica / Pasmo) sur le téléphone','eSIM ou pocket wifi','Adaptateur de prise (type A)','Un peu d\'espèces en yens','Réserver le musée Ghibli / teamLab','Chaussettes sans trous (on se déchausse souvent !)','Petit sac pour ses déchets'];
+let done=store.get('checks',{});
+function renderChecks(){$('#checklist').innerHTML=checks.map((c,i)=>`<div class="check ${done[i]?'done':''}" data-i="${i}"><div class="box">${done[i]?'✓':''}</div><span>${c}</span></div>`).join('');const n=checks.filter((c,i)=>done[i]).length;$('#prog').style.width=(n/checks.length*100)+'%';
+ document.querySelectorAll('.check').forEach(c=>c.onclick=()=>{const i=c.dataset.i;done[i]=!done[i];store.set('checks',done);if(done[i])addXP(1);renderChecks();if(checks.every((x,k)=>done[k])){petals(20);toast('🎉 Prêt pour le Japon !')}})}
+renderChecks();
+const etiq=[['👟','Chaussures','On les retire chez l\'habitant, au ryokan et dans certains temples ou restaurants.'],['🥢','Baguettes','Ne jamais les planter dans le riz ni passer de la nourriture de baguettes à baguettes.'],['🤫','Transports','On parle doucement et on évite de téléphoner dans le train.'],['🗑️','Déchets','Peu de poubelles publiques : on garde ses déchets jusqu\'à l\'hôtel.'],['💴','Argent','On pose l\'argent dans le petit plateau à la caisse plutôt que dans la main.'],['🚶','Manger en marchant','Mal vu dans beaucoup d\'endroits : on mange près du stand.']];
+$('#etiq').innerHTML=etiq.map(e=>`<div class="card"><div class="band" style="background:var(--matcha)"></div><div class="emo">${e[0]}</div><h3>${e[1]}</h3><p>${e[2]}</p></div>`).join('');
+
+/* ---------- Quiz ---------- */
+const Q=[
+ ['Quelle est la capitale du Japon ?',['Kyoto','Osaka','Tokyo','Hiroshima'],2,'Tokyo est la capitale depuis 1868. Avant, la cour impériale était à Kyoto.'],
+ ['Que signifie « Nihon » (日本) ?',['Pays du Soleil levant','Île des dieux','Terre des cerisiers','Montagne sacrée'],0,'Littéralement « origine du soleil », d\'où le surnom de pays du Soleil levant.'],
+ ['Quelle est la hauteur du mont Fuji ?',['2 450 m','3 776 m','4 810 m','5 120 m'],1,'3 776 m : c\'est le point culminant du Japon.'],
+ ['Comment s\'appelle le train à grande vitesse japonais ?',['Maglev Express','Shinkansen','TGV Nippon','Hikari Rail'],1,'Le Shinkansen circule depuis 1964, juste avant les JO de Tokyo.'],
+ ['Que fait-on avant d\'entrer dans un onsen ?',['On met un maillot','On se lave entièrement','On boit un thé','On salue le gérant'],1,'On se douche et se savonne assis avant d\'entrer dans l\'eau, qui sert uniquement à se détendre.'],
+ ['Combien de hiragana de base existe-t-il ?',['26','46','72','100'],1,'Il y a 46 hiragana de base, et autant de katakana.'],
+ ['À quelle saison a lieu le hanami ?',['Printemps','Été','Automne','Hiver'],0,'Le hanami, la contemplation des cerisiers en fleurs, a lieu fin mars – début avril.'],
+ ['Quelle ville est célèbre pour ses daims en liberté ?',['Sapporo','Nara','Nagoya','Sendai'],1,'À Nara, plus de 1 000 daims se promènent librement dans le parc.'],
+ ['Que signifie « arigatō » ?',['Bonjour','Au revoir','Merci','Pardon'],2,'Arigatō = merci. Version polie : arigatō gozaimasu.'],
+ ['Laisser un pourboire au Japon, c\'est…',['Obligatoire','Apprécié à 15 %','Inhabituel, voire gênant','Réservé aux taxis'],2,'Le service est considéré comme inclus. Un pourboire peut mettre mal à l\'aise.'],
+ ['Quelle est la religion traditionnelle propre au Japon ?',['Le taoïsme','Le shintoïsme','Le jaïnisme','Le confucianisme'],1,'Le shintō vénère les kami, esprits de la nature. Il cohabite avec le bouddhisme.'],
+ ['Quel plat est la spécialité de rue d\'Osaka ?',['Takoyaki','Tempura','Soba','Sukiyaki'],0,'Les takoyaki sont des boulettes de pâte garnies de poulpe.'],
+ ['Sur quelle île se trouve Sapporo ?',['Kyūshū','Shikoku','Hokkaidō','Okinawa'],2,'Sapporo est la grande ville d\'Hokkaidō, célèbre pour son festival de la neige.'],
+ ['Que veut dire « kawaii » ?',['Délicieux','Mignon','Effrayant','Rapide'],1,'Kawaii = mignon. C\'est toute une culture au Japon !'],
+ ['Quel monument de Miyajima semble flotter sur l\'eau ?',['Une pagode','Un torii','Un pont','Un château'],1,'Le grand torii du sanctuaire d\'Itsukushima semble flotter à marée haute.'],
+ ['Quel est le nom de la monnaie japonaise ?',['Le won','Le yuan','Le yen','Le baht'],2,'Le yen (円, en).'],
+ ['Que dit-on avant de manger ?',['Itadakimasu','Sayōnara','Ohayō','Ganbatte'],0,'Itadakimasu exprime la gratitude pour le repas.'],
+ ['Combien d\'îles compte environ le Japon ?',['Une centaine','Environ 1 000','Plus de 6 800','Plus de 50 000'],2,'Plus de 6 800 îles, et même environ 14 000 selon un recensement récent plus précis.'],
+ ['Quel kanji signifie « montagne » ?',['川','山','木','火'],1,'山 (yama) = montagne. 川 = rivière, 木 = arbre, 火 = feu.'],
+ ['Que sont les « konbini » ?',['Des trains de nuit','Des supérettes ouvertes 24 h/24','Des bains publics','Des salles de karaoké'],1,'Les konbini (7-Eleven, Lawson, FamilyMart…) vendent de tout, jour et nuit.'],
+];
+const badgesDef=[['🌱','Premiers pas',10],['🎋','Curieux',50],['🍣','Gourmet',120],['⛩️','Sensei',250],['🗻','Maître du Fuji',500]];
+function checkBadges(){$('#badges').innerHTML=badgesDef.map(b=>`<div class="badge ${XP>=b[2]?'got':''}"><div>${b[0]}</div>${b[1]}<br>${b[2]} XP</div>`).join('')}
+let qs=[],qi=0,qok=0;
+function startQuiz(){qs=[...Q].sort(()=>Math.random()-.5).slice(0,10);qi=0;qok=0;renderQ()}
+function renderQ(){if(qi>=qs.length){const perfect=qok===qs.length;$('#quizbox').innerHTML=`<div style="text-align:center"><div style="font-size:70px">${qok>=8?'🏆':qok>=5?'🎌':'🌱'}</div><div class="qq">${qok} / ${qs.length} bonnes réponses</div><p class="sub">${qok>=8?'Sugoi ! Tu es incollable sur le Japon.':qok>=5?'Pas mal du tout ! Encore un effort.':'Continue d\'explorer l\'onglet Découvrir !'}</p><button class="btn" id="again">Rejouer</button></div>`;$('#again').onclick=startQuiz;if(perfect){petals(25)};return}
+ const q=qs[qi];$('#quizbox').innerHTML=`<div class="qtop"><span>Question ${qi+1} / ${qs.length}</span><span>✅ ${qok}</span></div><div class="progress"><i style="width:${qi/qs.length*100}%"></i></div><div class="qq">${q[0]}</div><div class="qopts">${q[1].map((o,i)=>`<button class="qopt" data-i="${i}">${o}</button>`).join('')}</div><div class="expl" id="expl"></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button class="btn" id="next" style="display:none">Suivante →</button></div>`;
+ document.querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{if($('#expl').style.display==='block')return;const i=+b.dataset.i;if(i===q[2]){b.classList.add('ok');qok++;addXP(10);toast('正解！ Seikai ! +10 XP')}else{b.classList.add('ko');document.querySelectorAll('.qopt')[q[2]].classList.add('ok')}
+  $('#expl').textContent='💡 '+q[3];$('#expl').style.display='block';$('#next').style.display='inline-block';$('#next').onclick=()=>{qi++;renderQ()}})}
+startQuiz();
+
+$('#xp').textContent='⭐ '+XP+' XP';checkBadges();
+show(location.hash.slice(1)||'decouvrir');
+</script>
+</body>
+</html>
