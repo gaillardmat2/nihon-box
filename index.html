@@ -121,6 +121,15 @@ h2{font-size:24px;font-weight:800;margin:10px 0 4px}
 .hero .e{font-size:56px}
 .hero b{font-size:20px}
 .hero p{font-size:14.5px;opacity:.95;margin-top:4px;line-height:1.5}
+.today{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:20px}
+.today .hero{margin-bottom:0}
+@media(min-width:600px){.today{grid-template-columns:1fr 1fr}.today .hero{grid-column:1/-1}}
+@media(min-width:1000px){.today{grid-template-columns:2fr 1fr 1fr}.today .hero{grid-column:auto}}
+.mini{color:#fff;border-radius:28px;padding:18px;box-shadow:var(--shadow);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.mini .lbl{font-weight:800;font-size:14px;opacity:.95}
+.mini .bigw{font-size:34px;font-weight:800;line-height:1.2;margin:4px 0}
+.mini #wInfo,.mini #kInfo{font-size:14px;line-height:1.45;opacity:.95}
+.say2{margin-top:8px;background:rgba(255,255,255,.22);color:#fff;font-weight:800;padding:8px 14px;border-radius:999px;font-size:13px}
 @media(min-width:700px){nav.tabs button{flex-direction:row;justify-content:center;gap:8px;font-size:15px;padding:12px}}
 </style>
 </head>
@@ -134,7 +143,26 @@ h2{font-size:24px;font-weight:800;margin:10px 0 4px}
 <main>
 <!-- DÉCOUVRIR -->
 <section class="view" id="v-decouvrir">
-  <div class="hero" id="fact"><div class="e">🎏</div><div><b>Le saviez-vous ?</b><p id="factTxt"></p></div></div>
+  <div class="today">
+    <div class="hero"><div class="e">🎏</div><div><b>Info du jour · <span id="todayDate"></span></b><p id="factTxt"></p></div></div>
+    <div class="mini" style="background:linear-gradient(135deg,var(--indigo),#7b5cff)">
+      <div class="lbl">💬 Mot du jour</div>
+      <div class="bigw" id="wJp"></div>
+      <div id="wInfo"></div>
+      <button class="say2" id="wSay">🔊 Écouter</button>
+    </div>
+    <div class="mini" style="background:linear-gradient(135deg,var(--matcha),#1f9e8f)">
+      <div class="lbl">🖌️ Kanji du jour</div>
+      <div class="bigw" id="kJp" style="font-size:56px"></div>
+      <div id="kInfo"></div>
+      <button class="say2" id="kSay">🔊 Écouter</button>
+    </div>
+  </div>
+  <div id="actuWrap" style="display:none;margin-bottom:22px">
+    <h2>📰 Actu du Japon</h2>
+    <p class="sub" id="actuMaj"></p>
+    <div class="grid" id="actu"></div>
+  </div>
   <h2>Découvrir le Japon</h2>
   <p class="sub">Touche une carte pour en savoir plus.</p>
   <div class="pills" id="cats"></div>
@@ -231,9 +259,92 @@ document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{location.
 window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
 
 /* ---------- Découvrir ---------- */
-const facts=["Le Japon compte plus de 6 800 îles, mais quatre principales : Honshū, Hokkaidō, Kyūshū et Shikoku.","Il y a plus de distributeurs automatiques au Japon que dans presque n'importe quel autre pays : environ un pour 30 habitants.","Le Shinkansen circule depuis 1964 et ses retards moyens se comptent en secondes.","Au Japon, on ne laisse pas de pourboire : cela peut même gêner le serveur.","Le mont Fuji culmine à 3 776 m et l'ascension n'est ouverte qu'en été.","Les Japonais disent « itadakimasu » avant de manger, pour remercier de la nourriture.","Le Japon compte environ 80 000 sanctuaires shintō et 75 000 temples bouddhistes."];
-$('#factTxt').textContent=facts[Math.floor(Math.random()*facts.length)];
-$('#fact').onclick=()=>{$('#factTxt').textContent=facts[Math.floor(Math.random()*facts.length)]};
+/* Contenu du jour : change une fois par jour, à minuit (heure locale) */
+const facts=[
+"Le Japon compte plus de 14 000 îles selon un recensement de 2023, dont quatre principales : Honshū, Hokkaidō, Kyūshū et Shikoku.",
+"Il y a environ 4 millions de distributeurs automatiques au Japon : boissons chaudes, froides, soupes, parapluies…",
+"Le Shinkansen circule depuis 1964 et ses retards moyens se comptent en secondes.",
+"Au Japon, on ne laisse pas de pourboire : cela peut même gêner le serveur.",
+"Le mont Fuji culmine à 3 776 m. La saison officielle d'ascension va de juillet à début septembre.",
+"Les Japonais disent « itadakimasu » avant de manger, pour remercier de la nourriture.",
+"Le Japon compte environ 80 000 sanctuaires shintō et plus de 75 000 temples bouddhistes.",
+"L'agglomération de Tokyo est la plus peuplée du monde, avec environ 37 millions d'habitants.",
+"Le japonais s'écrit avec trois systèmes mélangés : les hiragana, les katakana et les kanji.",
+"Plus de 300 saveurs de Kit Kat sont sorties au Japon : thé matcha, sakura, wasabi, patate douce…",
+"Dans beaucoup d'écoles japonaises, ce sont les élèves qui nettoient eux-mêmes leur classe : c'est l'o-sōji.",
+"Les Japonais ont l'une des espérances de vie les plus élevées au monde.",
+"À Zentsūji, on fait pousser des pastèques carrées dans des boîtes. Elles sont surtout décoratives !",
+"Le chien Hachikō a attendu son maître à la gare de Shibuya pendant près de dix ans après sa mort. Sa statue y est toujours.",
+"Kongō Gumi, une entreprise de construction de temples fondée en 578, est considérée comme l'une des plus anciennes entreprises du monde.",
+"Le karaoké est né au Japon dans les années 1970. « Kara » signifie vide et « oke » vient d'orchestre.",
+"Les émojis ont été inventés au Japon en 1999 par Shigetaka Kurita, pour les téléphones de NTT Docomo.",
+"Chaque février, le festival de la neige de Sapporo expose d'immenses sculptures de glace et de neige.",
+"Au printemps, la météo télévisée annonce l'avancée du « front des cerisiers » (sakura zensen), du sud vers le nord.",
+"Le Japon compte environ 110 volcans actifs.",
+"Le Japon ressent des milliers de séismes par an, mais la grande majorité sont imperceptibles.",
+"Tokyo a accueilli les Jeux olympiques d'été deux fois : en 1964 et en 2021.",
+"Le drapeau japonais s'appelle le Hinomaru, « le cercle du soleil ».",
+"La famille impériale japonaise est la plus ancienne monarchie héréditaire encore en place.",
+"Le Japon compte aussi les années par ère impériale : depuis 2019, c'est l'ère Reiwa.",
+"Le premier hôtel capsule a ouvert à Osaka en 1979.",
+"Les nouilles instantanées ont été inventées en 1958 par Momofuku Andō.",
+"Le « wasabi » servi hors du Japon est souvent du raifort coloré en vert. Le vrai wasabi se râpe frais.",
+"À Tokyo, les équipes de nettoyage nettoient un Shinkansen entier en environ 7 minutes.",
+"Au Japon, il existe souvent des pantoufles spéciales réservées aux toilettes.",
+"Les toilettes japonaises high-tech (washlet) ont un siège chauffant, un jet d'eau et parfois de la musique.",
+"Le « kaizen », l'amélioration continue, est une méthode japonaise connue dans le monde entier.",
+"Nintendo a été fondé à Kyoto en 1889… pour fabriquer des cartes à jouer hanafuda.",
+"Toyota a commencé par fabriquer des métiers à tisser avant de construire des voitures.",
+"Le 5 mai, jour des enfants, on accroche des carpes en tissu (koinobori), symboles de courage.",
+"La Golden Week, fin avril – début mai, regroupe plusieurs jours fériés : tout le pays voyage.",
+"Honshū est la plus grande île du Japon : Tokyo, Kyoto, Osaka et Hiroshima s'y trouvent.",
+"Okinawa était le royaume indépendant des Ryūkyū jusqu'en 1879.",
+"Kyoto a été la capitale du Japon de 794 à 1868.",
+"Le tunnel du Seikan, long de près de 54 km, relie Honshū à Hokkaidō sous la mer.",
+"Le pont d'Akashi-Kaikyō, près de Kobe, est l'un des plus longs ponts suspendus du monde.",
+"Au Japon, on roule à gauche, comme au Royaume-Uni.",
+"La profondeur du salut (ojigi) montre le degré de respect : plus on s'incline, plus on est respectueux.",
+"Les cartes de visite (meishi) se donnent et se reçoivent avec les deux mains.",
+"Le chiffre 4 (shi) se prononce comme le mot « mort » : on l'évite souvent, comme le 13 chez nous.",
+"Depuis une campagne publicitaire de 1974, beaucoup de Japonais mangent du poulet frit KFC à Noël.",
+"À la Saint-Valentin, ce sont les femmes qui offrent du chocolat. Les hommes rendent la pareille le 14 mars, au White Day.",
+"Le 7 juillet, pour Tanabata, on écrit ses vœux sur des bandes de papier accrochées à des bambous.",
+"Début février, pour Setsubun, on lance des haricots en criant « Oni wa soto ! Fuku wa uchi ! » (les démons dehors, le bonheur dedans).",
+"Le deuxième lundi de janvier, le Seijin no hi, on fête les jeunes qui deviennent adultes.",
+"Au Japon, on utilise souvent un tampon personnel (hanko) à la place d'une signature.",
+"Le japonais peut s'écrire à la verticale, en colonnes qui se lisent de droite à gauche.",
+"Origami vient de « oru » (plier) et « kami » (papier).",
+"Le sumo organise six grands tournois par an. Le rang le plus élevé est celui de yokozuna.",
+"Le judo a été fondé en 1882 par Kanō Jigorō.",
+"Un haïku suit un rythme de 5-7-5 syllabes et évoque souvent une saison.",
+"La dernière éruption du mont Fuji date de 1707.",
+"À Jigokudani, dans la région de Nagano, des macaques se baignent dans les sources chaudes en hiver.",
+"Le bento est un repas en boîte, souvent préparé avec soin, parfois en forme de personnages (kyaraben).",
+"Au Japon, les adresses suivent souvent des numéros de pâtés de maisons plutôt que des noms de rues."
+];
+const words=[["猫","ねこ","neko","chat"],["犬","いぬ","inu","chien"],["水","みず","mizu","eau"],["桜","さくら","sakura","cerisier en fleurs"],["友達","ともだち","tomodachi","ami"],["学校","がっこう","gakkō","école"],["電車","でんしゃ","densha","train"],["駅","えき","eki","gare"],["山","やま","yama","montagne"],["海","うみ","umi","mer"],["空","そら","sora","ciel"],["花","はな","hana","fleur"],["雨","あめ","ame","pluie"],["雪","ゆき","yuki","neige"],["本","ほん","hon","livre"],["家族","かぞく","kazoku","famille"],["朝ご飯","あさごはん","asagohan","petit-déjeuner"],["お茶","おちゃ","ocha","thé"],["美味しい","おいしい","oishii","délicieux"],["可愛い","かわいい","kawaii","mignon"],["楽しい","たのしい","tanoshii","amusant"],["大きい","おおきい","ōkii","grand"],["小さい","ちいさい","chiisai","petit"],["新しい","あたらしい","atarashii","nouveau"],["先生","せんせい","sensei","professeur"],["時間","じかん","jikan","temps, heure"],["今日","きょう","kyō","aujourd'hui"],["明日","あした","ashita","demain"],["昨日","きのう","kinō","hier"],["天気","てんき","tenki","météo"],["旅行","りょこう","ryokō","voyage"],["写真","しゃしん","shashin","photo"],["音楽","おんがく","ongaku","musique"],["車","くるま","kuruma","voiture"],["月","つき","tsuki","lune"],["星","ほし","hoshi","étoile"],["夢","ゆめ","yume","rêve"],["元気","げんき","genki","en forme"],["頑張って","がんばって","ganbatte","courage !"],["大丈夫","だいじょうぶ","daijōbu","ça va, pas de souci"]];
+const kanjis=[["一","イチ","ひと","un"],["二","ニ","ふた","deux"],["三","サン","みっ","trois"],["日","ニチ","ひ","soleil, jour"],["月","ゲツ","つき","lune, mois"],["火","カ","ひ","feu"],["水","スイ","みず","eau"],["木","モク","き","arbre"],["金","キン","かね","or, argent"],["土","ド","つち","terre"],["山","サン","やま","montagne"],["川","セン","かわ","rivière"],["人","ジン","ひと","personne"],["口","コウ","くち","bouche"],["目","モク","め","œil"],["耳","ジ","みみ","oreille"],["手","シュ","て","main"],["足","ソク","あし","pied, jambe"],["大","ダイ","おお","grand"],["小","ショウ","ちい","petit"],["中","チュウ","なか","milieu, dedans"],["上","ジョウ","うえ","dessus"],["下","カ","した","dessous"],["右","ウ","みぎ","droite"],["左","サ","ひだり","gauche"],["男","ダン","おとこ","homme"],["女","ジョ","おんな","femme"],["子","シ","こ","enfant"],["学","ガク","まな","étudier"],["生","セイ","い","vie, naître"],["先","セン","さき","avant"],["年","ネン","とし","année"],["本","ホン","もと","livre, origine"],["天","テン","あめ","ciel"],["雨","ウ","あめ","pluie"],["花","カ","はな","fleur"],["空","クウ","そら","ciel, vide"],["白","ハク","しろ","blanc"],["赤","セキ","あか","rouge"],["車","シャ","くるま","voiture"]];
+function renderToday(){
+ const now=new Date();
+ const dayN=Math.floor((now.getTime()-now.getTimezoneOffset()*60000)/86400000);
+ const f=facts[dayN%facts.length],w=words[(dayN*7)%words.length],k=kanjis[(dayN*3)%kanjis.length];
+ $('#todayDate').textContent=now.toLocaleDateString('fr-BE',{weekday:'long',day:'numeric',month:'long'});
+ $('#factTxt').textContent=f;
+ $('#wJp').textContent=w[0];$('#wInfo').innerHTML=`${w[1]} · <b>${w[2]}</b><br>${w[3]}`;$('#wSay').onclick=()=>say(w[1]);
+ $('#kJp').textContent=k[0];$('#kInfo').innerHTML=`on : ${k[1]} · kun : ${k[2]}<br><b>${k[3]}</b>`;$('#kSay').onclick=()=>say(k[0]);
+ const lastSeen=store.get('lastDay',0);if(lastSeen!==dayN){store.set('lastDay',dayN);if(lastSeen){addXP(3);toast('🌅 Nouveau jour : +3 XP')}}
+ const msToMidnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1)-now+1000;clearTimeout(renderToday._t);renderToday._t=setTimeout(renderToday,msToMidnight);
+}
+renderToday();
+/* Actu du Japon : fichier actu.json mis à jour chaque matin */
+const esc=t=>String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const catCol={'Culture':'sakura','Société':'indigo','Économie':'gold','Sport':'verm','Science':'sky','Tourisme':'matcha','Politique':'indigo','Insolite':'sakura'};
+async function loadActu(){try{const r=await fetch('actu.json?d='+Date.now(),{cache:'no-store'});if(!r.ok)return;const d=await r.json();if(!d.actus||!d.actus.length)return;
+ $('#actuMaj').textContent='Mis à jour le '+new Date(d.maj||d.date).toLocaleDateString('fr-BE',{weekday:'long',day:'numeric',month:'long'})+' · '+d.actus.length+' infos';
+ $('#actu').innerHTML=d.actus.map(a=>{const [c,l]=C[catCol[a.categorie]||'indigo'];return `<div class="card"><div class="band" style="background:${c}"></div><div class="emo">${esc(a.emoji||'📰')}</div><h3>${esc(a.titre)}</h3><span class="tag" style="background:${l};color:${c};margin-top:4px">${esc(a.categorie||'Actu')}</span><p style="margin-top:8px">${esc(a.resume)}</p>${a.url?`<div class="hint"><a href="${esc(a.url)}" target="_blank" rel="noopener" style="color:${c}">Source : ${esc(a.source||'lire l\'article')} ↗</a></div>`:''}</div>`}).join('');
+ $('#actuWrap').style.display='block'}catch(e){}}
+loadActu();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderToday()});
 const C={sakura:['var(--sakura)','var(--sakura-l)'],indigo:['var(--indigo)','var(--indigo-l)'],matcha:['var(--matcha)','var(--matcha-l)'],gold:['var(--gold)','var(--gold-l)'],verm:['var(--vermillon)','var(--verm-l)'],sky:['var(--sky)','var(--sky-l)']};
 const items=[
  {c:'Régions',e:'❄️',t:'Hokkaidō',j:'北海道',col:'sky',p:"L'île du nord : nature sauvage, neige poudreuse et fruits de mer.",m:"À voir : Sapporo et son festival de la neige en février, les champs de lavande de Furano en juillet, le parc de Shiretoko. À goûter : ramen au miso, crabe, glaces au lait.",tags:['Ski','Nature']},

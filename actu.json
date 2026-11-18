@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-18",
+  "maj": "2026-11-18T16:50:00+01:00",
+  "actus": [
+    {"emoji": "🇸🇬", "categorie": "Culture", "titre": "La princesse Aiko en visite officielle à Singapour", "resume": "La fille unique de l'empereur Naruhito est partie le 17 novembre pour Singapour, à l'invitation du président Tharman Shanmugaratnam, pour les 60 ans des relations diplomatiques entre les deux pays.", "source": "News On Japan", "url": "https://newsonjapan.com/"},
+    {"emoji": "🤼", "categorie": "Sport", "titre": "Sumo : grosse surprise au tournoi de Kyūshū", "resume": "À Fukuoka, le sekiwake Atamifuji a battu le yokozuna Onosato le 17 novembre. Il partage la tête du tournoi avec Wakamotoharu, à cinq jours de la fin.", "source": "News On Japan", "url": "https://newsonjapan.com/"},
+    {"emoji": "🛰️", "categorie": "Science", "titre": "Une sonde spatiale japonaise change de cible", "resume": "À la suite d'un problème de moteur, une sonde spatiale japonaise doit modifier la destination prévue de sa mission.", "source": "The Japan Times", "url": "https://www.japantimes.co.jp/latest-news/"},
+    {"emoji": "🐻", "categorie": "Société", "titre": "Moins d'ours aperçus cette année", "resume": "Les observations d'ours ont nettement diminué par rapport à l'année fiscale précédente, au cours de laquelle un nombre record de 13 personnes avaient été tuées.", "source": "The Japan Times", "url": "https://www.japantimes.co.jp/latest-news/"},
+    {"emoji": "🍁", "categorie": "Tourisme", "titre": "Le jardin Kōraku-en s'illumine la nuit", "resume": "À Okayama, ce jardin de l'époque d'Edo ouvre en soirée pour admirer les couleurs d'automne mises en lumière.", "source": "Nippon.com", "url": "https://www.nippon.com/fr/articles/-/57494"},
+    {"emoji": "📉", "categorie": "Économie", "titre": "Le Nikkei passe sous les 59 000 points", "resume": "La Bourse de Tokyo a clôturé à 58 860 points le 17 novembre (-1,34 %), poursuivant la forte baisse des valeurs technologiques.", "source": "News On Japan", "url": "https://newsonjapan.com/"}
+  ]
+}

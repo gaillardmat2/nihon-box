@@ -9,6 +9,10 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
+    location = /actu.json {
+        add_header Cache-Control "no-cache";
+    }
+
     location = /healthz {
         access_log off;
         return 200 "ok";
